@@ -870,8 +870,8 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 @keyframes dustUp{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--dx,10px),-105vh,0)}}
 @keyframes dustTw{from{opacity:.3}to{opacity:.7}}
 .hero-vignette{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(30,58,138,.12) 100%)}
-.hero-content{color:var(--accent-deep);padding:0 clamp(48px,14vw,120px);max-width:760px}
-.hero-name{color:var(--accent-deep);text-shadow:none;font-size:clamp(46px,12vw,118px);line-height:1.05;filter:drop-shadow(0 2px 18px rgba(255,255,255,.9))}
+.hero-content{color:var(--accent-deep);padding:0 18px;max-width:900px}
+.hero-name{color:var(--accent-deep);text-shadow:none;font-size:clamp(40px,11vw,118px);line-height:1.05;filter:drop-shadow(0 2px 18px rgba(255,255,255,.9))}
 .hero-name .hero-name-p,.hero-name .hero-name-l,.hero-name .hero-and{display:block;width:max-content;margin-left:auto;margin-right:auto}
 .hero-name .hero-and{font-size:clamp(66px,17vw,120px);line-height:1}
 .hero-and{color:var(--accent);text-shadow:none;margin:0 0 6px}
@@ -2944,7 +2944,7 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
 
   /* recorrido automático sin botón */
   var stopped = false, running = false, acc = 0, last = 0, speed = 0, target = 37, selfY = -1, raf = 0;
-  function stop(){ if (stopped) return; stopped = true; running = false; cancelAnimationFrame(raf); }
+  function stop(){ if (stopped) return; stopped = true; running = false; cancelAnimationFrame(raf); document.documentElement.style.scrollBehavior = ''; }
   window.__stopAuto = stop;
   var q = new URLSearchParams(location.search);
   var blocked = reduce || location.hash.length > 1 || q.has('noauto');
@@ -2960,10 +2960,10 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
     acc += speed * dt;
     var max = document.documentElement.scrollHeight - innerHeight;
     if (scrollY >= max - 1){ stop(); return; }
-    if (acc >= 1){ var d = Math.floor(acc); acc -= d; selfY = Math.round(scrollY + d); window.scrollTo(0, selfY); }
+    if (acc >= 1){ var d = Math.floor(acc); acc -= d; selfY = Math.round(scrollY + d); window.scrollTo({ top: selfY, behavior: 'instant' }); }
     raf = requestAnimationFrame(step);
   }
-  function start(){ if (blocked || stopped || running) return; running = true; last = 0; speed = 0; raf = requestAnimationFrame(step); }
+  function start(){ if (blocked || stopped || running) return; document.documentElement.style.scrollBehavior = 'auto'; running = true; last = 0; speed = 0; raf = requestAnimationFrame(step); }
   ['wheel','touchstart','pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, function(){ if (running || !stopped) stop(); }, { passive: true, capture: true }); });
   window.addEventListener('scroll', function(){ if (!running) return; if (Math.abs(scrollY - selfY) > 3) stop(); }, { passive: true, capture: true });
   document.addEventListener('visibilitychange', function(){ if (!document.hidden && !stopped && !running && started) start(); });
