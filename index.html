@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Miguel Ángel &amp; Sheyla · 19 Diciembre 2026 · Playa del Carmen</title>
+<title>Boda civil · Miguel Ángel &amp; Sheyla · 19 Diciembre 2026</title>
 <meta name="description" content="Miguel Ángel &amp; Sheyla · Nuestra boda · Sábado 19 de diciembre de 2026 · Playa del Carmen, Quintana Roo">
 
 <meta property="og:type" content="website">
@@ -917,6 +917,41 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 .pd-wit li.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.pd-wit li{opacity:1;transform:none;transition:none}}
 
+
+/* portada: Nuestro Matrimonio Civil */
+.civ-rings{display:block;width:clamp(96px,26vw,150px);height:auto;margin:0 auto 10px;filter:drop-shadow(0 6px 14px rgba(120,90,30,.25));animation:levitate 6.5s ease-in-out infinite}
+.hero-name.civ-title .hero-name-p{font-family:var(--script);font-style:normal;font-size:clamp(52px,15vw,120px);line-height:1.15}
+.hero-name.civ-title .hero-and{font-family:var(--script);font-size:clamp(58px,16.5vw,132px);line-height:1.15;margin:-.12em auto 0}
+.hero-name.civ-title .hero-name-l{font-family:var(--display);font-style:normal;font-weight:500;font-size:clamp(64px,19vw,150px);letter-spacing:.02em;line-height:1.05;margin-top:-.08em}
+
+/* nombres + foto de fondo + frase */
+.civ-names{position:relative;isolation:isolate;overflow:hidden;color:#F6F8FC;text-align:center;padding:min(16vh,140px) 0;background:#141c45}
+.civ-names .civ-photo{position:absolute;inset:-8% 0;z-index:-3;overflow:hidden}
+.civ-names .civ-photo i{position:absolute;inset:0;background:url('pareja1.jpg') center 62%/cover no-repeat;animation:heroDrift 20s ease-in-out infinite alternate}
+.civ-names::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(20,28,69,.55) 0%,rgba(30,24,60,.45) 45%,rgba(20,28,69,.78) 100%)}
+.civ-names .container{position:relative;z-index:1;max-width:640px}
+.civ-names .eyebrow{color:#e3daf0}
+.civ-names .civ-nm{font-family:var(--display);font-style:italic;font-weight:500;font-size:clamp(46px,12vw,92px);line-height:1.1;margin:14px 0 22px;--foil:var(--foil-dark)}
+.civ-names .civ-nm span{display:block}
+.civ-names .civ-nm .amp{font-family:var(--script);font-style:normal;font-size:.8em;margin:.05em 0}
+.civ-names .civ-quote{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(20px,5.2vw,26px);line-height:1.6;color:#F6F8FC;text-shadow:0 2px 14px rgba(0,0,0,.55);max-width:34ch;margin:0 auto}
+
+/* galería: díptico con sus 2 fotos */
+.gal2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,4vw,30px);max-width:680px;margin:26px auto 0;padding:0 18px}
+.gal2 figure{margin:0;cursor:zoom-in;animation:levitate 6.5s ease-in-out infinite}
+.gal2 figure:nth-child(2){animation-delay:-3.2s;margin-top:38px}
+.gal2 .ph{aspect-ratio:3/4.4;overflow:hidden;border:1px solid var(--gold-soft);box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--gold),0 22px 44px -16px rgba(30,47,78,.45)}
+.gal2 img{width:100%;height:100%;object-fit:cover;display:block}
+.gal2 figure:nth-child(1) img{object-position:50% 70%}
+.gal2 figure:nth-child(2) img{object-position:50% 45%}
+
+/* transferencia en regalos */
+.lluv-bank{max-width:420px;margin:30px auto 0;padding:22px 20px;text-align:center;background:rgba(255,255,255,.82);border:1px solid var(--gold-soft);box-shadow:0 14px 34px -18px rgba(30,47,78,.35)}
+.lluv-bank p{margin:0;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--ink-soft)}
+.lluv-bank .bk-name{font-family:var(--sans);font-weight:700;letter-spacing:.3em;padding-left:.3em;color:var(--accent-deep);margin:6px 0 4px}
+.lluv-bank .bk-num{font-family:var(--sans);font-size:clamp(19px,5.4vw,22px);font-weight:600;letter-spacing:.06em;color:var(--ink);font-variant-numeric:tabular-nums}
+.lluv-bank button{margin-top:14px;min-height:44px;padding:10px 24px;border:1.5px solid var(--accent-deep);background:transparent;color:var(--accent-deep);font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:.18em;cursor:pointer;touch-action:manipulation}
+
 /* levitación */
 @keyframes levitate{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(0,-9px,0) rotate(var(--lr,.6deg))}}
 .loc-card,.family-block,.padrino-card,.lev-item{animation:levitate 6.5s ease-in-out infinite}
@@ -1666,6 +1701,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
     <li><a href="#fecha">La fecha</a></li>
     <li><a href="#familia">Familia</a></li>
     <li><a href="#ubicacion">Ubicación</a></li>
+    <li><a href="#galeria">Galería</a></li>
     <li><a href="#itinerario">Itinerario</a></li>
     <li><a href="#vestimenta">Vestimenta</a></li>
     <li><a href="#regalos">Regalos</a></li>
@@ -1722,10 +1758,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
     <div class="hero-dust" aria-hidden="true"></div>
     <div class="hero-vignette" aria-hidden="true"></div>
     <div class="hero-content">
-      <h1 class="hero-name" aria-label="Miguel Ángel y Sheyla">
-        <span class="hero-name-p foil-text" data-split="Miguel Ángel"></span>
-        <span class="hero-and foil-text">&amp;</span>
-        <span class="hero-name-l foil-text" data-split="Sheyla"></span>
+      <svg class="civ-rings" viewBox="0 0 120 92" aria-hidden="true">
+        <defs><linearGradient id="civGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e7b8"/><stop offset=".35" stop-color="#d9b25c"/><stop offset=".6" stop-color="#b8892f"/><stop offset="1" stop-color="#f1d98f"/></linearGradient></defs>
+        <ellipse cx="48" cy="56" rx="30" ry="27" fill="none" stroke="url(#civGold)" stroke-width="6"/>
+        <ellipse cx="74" cy="62" rx="30" ry="25" fill="none" stroke="url(#civGold)" stroke-width="7"/>
+        <path d="M40 28 L48 16 L56 28 Z" fill="#eef3ff" stroke="#c9d3ec" stroke-width="1.2"/>
+        <path d="M43 28 L48 21 L53 28" fill="none" stroke="#ffffff" stroke-width=".8" opacity=".9"/>
+        <path d="M41 29 h14" stroke="url(#civGold)" stroke-width="2.4"/>
+      </svg>
+      <h1 class="hero-name civ-title" aria-label="Nuestro Matrimonio Civil">
+        <span class="hero-name-p foil-text" data-split="Nuestro"></span>
+        <span class="hero-and foil-text">Matrimonio</span>
+        <span class="hero-name-l foil-text" data-split="Civil"></span>
       </h1>
     </div>
     <div class="hero-scroll">Desliza</div>
@@ -1733,25 +1777,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
 
 
   <!-- VERSO -->
-  <section class="section-surface">
+  <section class="civ-names" id="nosotros" data-top="#1c2350" data-bot="#1c2350">
+    <div class="civ-photo" aria-hidden="true"><i></i></div>
     <div class="container">
-      <div class="verse-wrap">
-        <svg class="verse-ornament" viewBox="0 0 360 80" fill="none" aria-hidden="true">
-          <g stroke="var(--gold)" stroke-width=".9" opacity=".75" fill="none">
-            <path d="M30 40 Q70 18 110 40 Q140 58 170 40"/>
-            <path d="M190 40 Q220 58 250 40 Q290 18 330 40"/>
-            <circle cx="180" cy="40" r="4" stroke="var(--gold)"/>
-            <circle cx="180" cy="40" r="1.5" fill="var(--gold)" stroke="none"/>
-            <path d="M175 28 Q180 20 185 28" opacity=".7"/>
-            <path d="M175 52 Q180 60 185 52" opacity=".7"/>
-            <path d="M10 40 L30 40" opacity=".5"/>
-            <path d="M330 40 L350 40" opacity=".5"/>
-          </g>
-        </svg>
-        <span class="verse-quote">&ldquo;</span>
-        <p class="verse-text">Por encima de todo, vístanse de amor,<br>porque es un lazo de unión <em>perfecto.</em></p>
-        <div class="verse-sig">Colosenses 3:14</div>
-      </div>
+      <div class="eyebrow">Nos casamos</div>
+      <h2 class="civ-nm foil-text"><span>Miguel Ángel</span><span class="amp">&amp;</span><span>Sheyla</span></h2>
+      <p class="civ-quote">“El amor no se encontró en el momento perfecto y desde entonces caminamos juntos con un mismo sueño: construir una vida llena de amor, respeto y felicidad. Hoy queremos dar el siguiente paso y nos haría muy felices que seas parte de este día tan especial.”</p>
     </div>
   </section>
 
@@ -1982,28 +2013,28 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
           <li class="it-event">
             <span class="it-marker" aria-hidden="true"></span>
             <div class="it-card">
-              <div class="it-time it-time--tbc">Por confirmar</div>
+              <div class="it-time">8:00 pm</div>
               <div class="it-name">Cena</div>
             </div>
           </li>
           <li class="it-event">
             <span class="it-marker" aria-hidden="true"></span>
             <div class="it-card">
-              <div class="it-time it-time--tbc">Por confirmar</div>
+              <div class="it-time">8:30 pm</div>
               <div class="it-name">Brindis</div>
             </div>
           </li>
           <li class="it-event">
             <span class="it-marker" aria-hidden="true"></span>
             <div class="it-card">
-              <div class="it-time it-time--tbc">Por confirmar</div>
+              <div class="it-time">9:00 pm</div>
               <div class="it-name">Baile</div>
             </div>
           </li>
           <li class="it-event">
             <span class="it-marker" aria-hidden="true"></span>
             <div class="it-card">
-              <div class="it-time it-time--tbc">Por confirmar</div>
+              <div class="it-time">A partir de las 9:30 pm</div>
               <div class="it-name">Fiesta</div>
             </div>
           </li>
@@ -2056,22 +2087,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
 
   <!-- GALLERY -->
   <!-- GALERÍA — CARRUSEL 3D (reemplaza la rueda .wheel-stage) -->
-  <section class="section-surface gallery" id="galeria" hidden aria-label="Galería de fotos">
+  <section class="section-surface gallery" id="galeria" aria-label="Galería de fotos">
     <div class="container gallery-head">
       <div class="eyebrow">Momentos</div>
       <h2 class="foil-text">Del camino <em>que</em> nos trajo aquí</h2>
-      <div class="gallery-sub">nuestros recuerdos</div>
     </div>
-    <div class="g3d-scene" id="g3d-scene">
-      <div class="g3d-ring" id="g3d-ring">
-        <figure class="g3d-card"><div class="g3d-photo"><img src="foto1.jpg" alt="Miguel Ángel y Sheyla" draggable="false"></div><div class="g3d-reflect" aria-hidden="true"><img src="foto1.jpg" alt="" draggable="false"><span class="g3d-veil"></span></div></figure>
-        <figure class="g3d-card"><div class="g3d-photo"><img src="foto2.jpg" alt="Miguel Ángel y Sheyla" draggable="false"></div><div class="g3d-reflect" aria-hidden="true"><img src="foto2.jpg" alt="" draggable="false"><span class="g3d-veil"></span></div></figure>
-        <figure class="g3d-card"><div class="g3d-photo"><img src="foto3.jpg" alt="Miguel Ángel y Sheyla" draggable="false"></div><div class="g3d-reflect" aria-hidden="true"><img src="foto3.jpg" alt="" draggable="false"><span class="g3d-veil"></span></div></figure>
-        <figure class="g3d-card"><div class="g3d-photo"><img src="foto4.jpg" alt="Miguel Ángel y Sheyla" draggable="false"></div><div class="g3d-reflect" aria-hidden="true"><img src="foto4.jpg" alt="" draggable="false"><span class="g3d-veil"></span></div></figure>
-        <figure class="g3d-card"><div class="g3d-photo"><img src="foto5.jpg" alt="Miguel Ángel y Sheyla" draggable="false"></div><div class="g3d-reflect" aria-hidden="true"><img src="foto5.jpg" alt="" draggable="false"><span class="g3d-veil"></span></div></figure>
-      </div>
+    <div class="gal2">
+      <figure><div class="ph"><img src="pareja1.jpg" alt="Miguel Ángel y Sheyla en el campo"></div></figure>
+      <figure><div class="ph"><img src="pareja2.jpg" alt="Miguel Ángel y Sheyla"></div></figure>
     </div>
-    <p class="g3d-hint">Desliza para girar · toca para ampliar</p>
   </section>
 
   <!-- GIFTS -->
@@ -2127,6 +2151,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
         </div>
       </button>
       <button class="lluv-hint" id="lluvHint" type="button" aria-controls="lluvEnv">Toca para abrir</button>
+    </div>
+    <div class="lluv-bank">
+      <p>También puedes hacernos una transferencia</p>
+      <p class="bk-name">BBVA</p>
+      <p class="bk-num">4152 3145 0871 7702</p>
+      <button type="button" id="bkCopy">COPIAR NÚMERO</button>
     </div>
   </section>
 
@@ -2334,11 +2364,6 @@ function launchInvitation(){
 gsap.to('.hero-bg',{y:-70,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
 gsap.fromTo('.hero-content',{y:0,opacity:1,filter:'blur(0px)'},{y:-110,opacity:0,filter:'blur(10px)',ease:'none',immediateRender:false,scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
 
-const verseWords = splitToWords(document.querySelector('.verse-text'));
-gsap.fromTo('.verse-ornament',{opacity:0,y:30,scale:.9},{opacity:1,y:0,scale:1,duration:1.2,ease:'power3.out',scrollTrigger:{trigger:'.verse-wrap',start:'top 80%'}});
-gsap.fromTo('.verse-quote',{opacity:0,scale:.5,rotate:-10},{opacity:.8,scale:1,rotate:0,duration:1.3,ease:'back.out(1.4)',scrollTrigger:{trigger:'.verse-wrap',start:'top 80%'}});
-gsap.fromTo(verseWords,{opacity:0,y:24},{opacity:1,y:0,duration:.9,stagger:.05,ease:'power3.out',scrollTrigger:{trigger:'.verse-text',start:'top 82%'}});
-gsap.fromTo('.verse-sig',{opacity:0,y:20,scaleX:.6},{opacity:1,y:0,scaleX:1,duration:1.2,ease:'power3.out',scrollTrigger:{trigger:'.verse-sig',start:'top 88%'}});
 
 document.querySelectorAll('[data-count-to]').forEach(el=>{
   const to=parseInt(el.dataset.countTo,10);
@@ -3219,6 +3244,21 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
     new IntersectionObserver(function(es, o){ es.forEach(function(e){ if (!e.isIntersecting) return; o.disconnect();
       lis.forEach(function(l, k){ setTimeout(function(){ l.classList.add('in'); }, 250 + k * 650); }); }); }, { threshold: .3 }).observe(document.getElementById('pdWit'));
   })();
+
+  /* nombres y frase: aparición suave */
+  if (window.gsap && window.ScrollTrigger && !reduce){
+    gsap.fromTo('.civ-names .eyebrow, .civ-names .civ-nm, .civ-names .civ-quote',{opacity:0,y:26},{opacity:1,y:0,duration:1.2,stagger:.18,ease:'power3.out',scrollTrigger:{trigger:'.civ-names',start:'top 75%'}});
+  }
+  /* galería díptico: lightbox */
+  document.querySelectorAll('.gal2 figure').forEach(function(f){ f.addEventListener('click', function(){
+    var lb = document.getElementById('lightbox'), im = document.getElementById('lightbox-img'); if (!lb || !im) return;
+    window.__stopAuto && window.__stopAuto();
+    im.src = f.querySelector('img').src; lb.classList.add('is-open'); im.style.opacity = 1; im.style.transform = 'none';
+  }); });
+  /* copiar cuenta */
+  var cb = document.getElementById('bkCopy');
+  cb && cb.addEventListener('click', function(){ var t = '4152314508717702';
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ cb.textContent = 'COPIADO'; setTimeout(function(){ cb.textContent = 'COPIAR NÚMERO'; }, 2200); }, function(){ cb.textContent = t; }); });
 
   /* fundidos uniformes entre secciones */
   function parse(c){ var m = c && c.match(/rgba?\(([^)]+)\)/); if(!m) return null; var p=m[1].split(',').map(parseFloat); if(p.length>3 && p[3]===0) return null; return p.slice(0,3); }
