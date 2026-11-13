@@ -1160,6 +1160,16 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 .rs-input::placeholder{color:var(--ink-soft);opacity:.8;font-style:italic}
 .rs-input:focus{border-color:var(--accent-deep);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
 .rs-input:disabled{opacity:.55}
+.rs-input.falta{border-color:#8A2E1F;box-shadow:0 0 0 3px rgba(138,46,31,.14)}
+.rs-cont-wrap{margin:18px 0 0;text-align:center}
+.rs-cont-nota{font-family:var(--serif);font-style:italic;font-weight:500;font-size:18px;line-height:1.5;color:var(--ink-soft);margin:0 auto 10px}
+.rs-cont{display:flex;align-items:center;justify-content:center;gap:22px;padding:8px 14px;border:1px solid var(--gold-soft);border-radius:999px;background:var(--surface)}
+.rs-cont-btn{width:46px;height:46px;flex:0 0 auto;border-radius:50%;border:1px solid var(--accent-deep);background:var(--paper);color:var(--accent-deep);font-family:var(--serif);font-size:26px;font-weight:600;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color .25s,color .25s}
+.rs-cont-btn:hover:not(:disabled){background:var(--accent-deep);color:#fff}
+.rs-cont-btn:disabled{opacity:.35;cursor:default}
+.rs-cont-val{font-family:var(--display);font-weight:400;font-size:40px;line-height:1;color:var(--accent-deep);min-width:52px;text-align:center;font-variant-numeric:lining-nums}
+.rs-cont-pie{font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);margin:10px auto 0}
+.rs-cont-pie:empty{display:none}
 .rs-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;margin-top:22px;border:none;border-radius:2px;cursor:pointer;
   background:linear-gradient(135deg,var(--accent) 0%,var(--accent-deep) 60%,#142a66 100%);color:#fff;
   font-family:var(--serif);font-weight:700;font-size:16px;letter-spacing:.26em;text-transform:uppercase;transition:opacity .25s,transform .25s}
@@ -2228,7 +2238,27 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
             <button class="rs-opt" id="rs-yes" type="button" role="radio" aria-checked="false">Sí, con gusto asistiré</button>
             <button class="rs-opt" id="rs-no" type="button" role="radio" aria-checked="false">No podré asistir</button>
           </div>
-          <div class="rs-fields" id="rs-fields" hidden></div>
+          <div id="rs-si" hidden>
+            <div class="rs-cont-wrap" id="rs-cont-ad" hidden>
+              <p class="rs-cont-nota" id="rs-cont-ad-nota"></p>
+              <div class="rs-cont">
+                <button class="rs-cont-btn" id="rs-ad-menos" type="button" aria-label="Quitar un adulto">&minus;</button>
+                <span class="rs-cont-val" id="rs-ad-val" aria-live="polite">1</span>
+                <button class="rs-cont-btn" id="rs-ad-mas" type="button" aria-label="Agregar un adulto">+</button>
+              </div>
+              <p class="rs-cont-pie" id="rs-cont-ad-pie"></p>
+            </div>
+            <div class="rs-cont-wrap" id="rs-cont-men" hidden>
+              <p class="rs-cont-nota" id="rs-cont-men-nota"></p>
+              <div class="rs-cont">
+                <button class="rs-cont-btn" id="rs-men-menos" type="button" aria-label="Quitar un menor">&minus;</button>
+                <span class="rs-cont-val" id="rs-men-val" aria-live="polite">0</span>
+                <button class="rs-cont-btn" id="rs-men-mas" type="button" aria-label="Agregar un menor">+</button>
+              </div>
+              <p class="rs-cont-pie" id="rs-cont-men-pie"></p>
+            </div>
+            <div class="rs-fields" id="rs-fields"></div>
+          </div>
           <button class="rs-btn" id="rs-send" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4 18-7z"/></svg><span id="rs-send-text">Enviar confirmación</span></button>
         </div>
       </div>
@@ -2815,7 +2845,7 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
   }
 })();
 
-/* ── RSVP · Panel de Invitados (X pases) — diseño jennifer, datos/token de initRsvp ── */
+/* ── RSVP · Panel de Invitados (X pases + menores) — diseño jennifer ── */
 (function initRsvpRs(){
   var PANEL_API = 'https://panel-invitados.vercel.app/api/confirmar';
   var RSVP_URL  = 'https://boda-sheyla-y-miguel.vercel.app';
@@ -2823,7 +2853,7 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
   var frozen    = Date.now() > DEADLINE.getTime();
   var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Token ?i= base64url "nombre|pases" (atraviesa WhatsApp intacto); ?para=&pases= para links viejos. */
+  /* Token ?i= base64url "nombre|pases|menores" (atraviesa WhatsApp intacto); ?para=&pases=&menores= para links viejos. */
   function decodeInvite(tok){
     try{
       var b64 = tok.replace(/-/g,'+').replace(/_/g,'/');
@@ -2831,82 +2861,121 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
       var bin = atob(b64), bytes = new Uint8Array(bin.length);
       for(var i=0;i<bin.length;i++){ bytes[i] = bin.charCodeAt(i); }
       var p = new TextDecoder().decode(bytes).split('|');
-      return { para:(p[0]||'').trim(), pases: parseInt(p[1],10) || 1 };
+      return { para:(p[0]||'').trim(), pases: parseInt(p[1],10) || 1, menores: parseInt(p[2],10) || 0 };
     }catch(e){ return null; }
   }
   var qp = new URLSearchParams(window.location.search);
   var hp = new URLSearchParams(window.location.hash.replace(/^#/,''));
-  var urlPara = '', rawP = 1;
+  var urlPara = '', rawP = 1, rawM = 0;
   var token = qp.get('i') || hp.get('i');
   if(token){
     var dec = decodeInvite(token);
-    if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; }
+    if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; rawM = dec.menores; }
   }
   if(!urlPara){
     urlPara = (qp.get('para') || hp.get('para') || '').trim();
     rawP    = parseInt(qp.get('pases') || hp.get('pases'), 10);
+    rawM    = parseInt(qp.get('menores') || hp.get('menores') || '0', 10);
   }
   var pasesAsignados = (isNaN(rawP) || rawP < 1 || rawP > 20) ? 1 : rawP;
-  /* menores: SOLO si la URL trae menores>0 (esta boda no carga niños) */
-  var rawM = parseInt(qp.get('menores') || hp.get('menores'), 10);
-  var menores = (isNaN(rawM) || rawM < 1 || rawM > 20) ? 0 : rawM;
+  var pasesMenores   = (isNaN(rawM) || rawM < 0 || rawM > 20) ? 0 : rawM;
 
   var $ = function(id){ return document.getElementById(id); };
   var hiEl = $('rs-hi'), noteEl = $('rs-note');
   var pBox = $('rs-pases-box'), pNum = $('rs-pases-num');
   var mBox = $('rs-menores-box'), mNum = $('rs-menores-num');
-  var fieldsEl = $('rs-fields'), bandejaEl = $('rs-bandeja'), graciasEl = $('rs-gracias');
+  var siEl = $('rs-si'), fieldsEl = $('rs-fields'), bandejaEl = $('rs-bandeja'), graciasEl = $('rs-gracias');
   var gTitle = $('rs-gracias-title'), gSub = $('rs-gracias-sub'), editarBtn = $('rs-editar');
   var btnYes = $('rs-yes'), btnNo = $('rs-no'), btnSend = $('rs-send'), btnText = $('rs-send-text');
+  var contAd = $('rs-cont-ad'), adNota = $('rs-cont-ad-nota'), adVal = $('rs-ad-val'), adPie = $('rs-cont-ad-pie');
+  var adMenos = $('rs-ad-menos'), adMas = $('rs-ad-mas');
+  var contMen = $('rs-cont-men'), menNota = $('rs-cont-men-nota'), menVal = $('rs-men-val'), menPie = $('rs-cont-men-pie');
+  var menMenos = $('rs-men-menos'), menMas = $('rs-men-mas');
   var feedEl = $('rs-feedback');
-  if(!btnSend || !btnYes || !btnNo) return;
+  if(!btnSend || !btnYes || !btnNo || !siEl) return;
 
-  var choice = null, savedNames = [];
+  var choice = null, savedNames = [], savedMen = [];
+  /* Lo que va a ocupar: adultos arranca en 1, menores en 0; nunca pasan del tope */
+  var pasesAUsar = 1, menoresAUsar = 0;
+  var bloqueado = false, sinFila = false, listo = false, sending = false;
+  var SUF = ' (Menor)';
 
+  function closed(){ return frozen || bloqueado || sinFila || !listo; }
   function setFeedback(msg, cls){
     feedEl.className = 'rs-feedback' + (cls ? ' ' + cls : '');
     feedEl.textContent = msg || '';
   }
+  function plural(n, uno, varios){ return n === 1 ? uno : varios; }
+
   function paintHeader(){
     pNum.textContent = pasesAsignados;
     pBox.hidden = false;
-    if(menores > 0){ mNum.textContent = menores; mBox.hidden = false; } else { mBox.hidden = true; }
+    if(pasesMenores > 0){ mNum.textContent = pasesMenores; mBox.hidden = false; } else { mBox.hidden = true; }
     if(urlPara){
+      var total = pasesAsignados + pasesMenores;
       hiEl.textContent = urlPara; hiEl.hidden = false;
-      noteEl.textContent = pasesAsignados === 1
+      noteEl.textContent = total === 1
         ? 'Hemos reservado un lugar para ti'
-        : 'Hemos reservado ' + pasesAsignados + ' lugares en tu honor';
+        : 'Hemos reservado ' + total + ' lugares en tu honor';
       noteEl.hidden = false;
     }
   }
   paintHeader();
 
-  function renderFields(n){
-    fieldsEl.innerHTML = '';
-    for(var i=0;i<n;i++){
-      var inp = document.createElement('input');
-      inp.type = 'text';
-      inp.className = 'rs-input';
-      inp.placeholder = 'Nombre completo del invitado ' + (i+1);
-      inp.setAttribute('aria-label', 'Nombre completo del invitado ' + (i+1));
-      inp.autocomplete = 'off';
-      inp.maxLength = 60;
-      inp.disabled = frozen;
-      inp.value = savedNames[i] || '';
-      (function(idx){ inp.addEventListener('input', function(){ savedNames[idx] = this.value; }); })(i);
-      fieldsEl.appendChild(inp);
-    }
+  function campo(placeholder, valor, esMenor, idx){
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'rs-input' + (esMenor ? ' rs-input--men' : '');
+    inp.placeholder = placeholder;
+    inp.setAttribute('aria-label', placeholder);
+    inp.autocomplete = 'off';
+    inp.maxLength = 60;
+    inp.disabled = closed();
+    inp.value = valor || '';
+    inp.addEventListener('input', function(){
+      (esMenor ? savedMen : savedNames)[idx] = this.value;
+      this.classList.remove('falta');
+    });
+    fieldsEl.appendChild(inp);
   }
-  /* Los campos de nombre solo existen si eligió "Sí". */
+  function renderFields(){
+    fieldsEl.innerHTML = '';
+    for(var i=0;i<pasesAUsar;i++){ campo('Nombre del Adulto ' + (i+1), savedNames[i], false, i); }
+    for(var j=0;j<menoresAUsar;j++){ campo('Nombre del Menor ' + (j+1), savedMen[j], true, j); }
+  }
+
+  function paintCounters(){
+    var c = closed();
+    contAd.hidden = pasesAsignados <= 1;
+    adVal.textContent = pasesAUsar;
+    adNota.textContent = 'Tienes ' + pasesAsignados + ' pases reservados. Aumenta el número de pases que vayas a ocupar.';
+    adPie.textContent = pasesAUsar >= pasesAsignados ? 'Usarás todos tus pases' : pasesAUsar + ' de ' + pasesAsignados + ' pases';
+    adMenos.disabled = c || pasesAUsar <= 1;
+    adMas.disabled   = c || pasesAUsar >= pasesAsignados;
+    contMen.hidden = pasesMenores <= 0;
+    menVal.textContent = menoresAUsar;
+    menNota.textContent = 'Además tienes ' + pasesMenores + plural(pasesMenores, ' pase de menor', ' pases de menor') + '. ¿Cuántos menores vienen?';
+    menPie.textContent = menoresAUsar + ' de ' + pasesMenores + plural(pasesMenores, ' menor', ' menores');
+    menMenos.disabled = c || menoresAUsar <= 0;
+    menMas.disabled   = c || menoresAUsar >= pasesMenores;
+  }
+  function setAd(n){ n = Math.min(pasesAsignados, Math.max(1, n)); if(n === pasesAUsar) return; pasesAUsar = n; paintCounters(); renderFields(); setFeedback(''); }
+  function setMen(n){ n = Math.min(pasesMenores, Math.max(0, n)); if(n === menoresAUsar) return; menoresAUsar = n; paintCounters(); renderFields(); setFeedback(''); }
+  adMenos.addEventListener('click',  function(){ if(!closed()) setAd(pasesAUsar - 1); });
+  adMas.addEventListener('click',    function(){ if(!closed()) setAd(pasesAUsar + 1); });
+  menMenos.addEventListener('click', function(){ if(!closed()) setMen(menoresAUsar - 1); });
+  menMas.addEventListener('click',   function(){ if(!closed()) setMen(menoresAUsar + 1); });
+
+  /* Contadores y campos solo existen si eligió "Sí". */
   function select(v){
     choice = v;
     btnYes.classList.toggle('on', v === 'yes'); btnYes.setAttribute('aria-checked', v === 'yes');
     btnNo.classList.toggle('on', v === 'no');   btnNo.setAttribute('aria-checked', v === 'no');
-    if(v === 'yes'){ renderFields(pasesAsignados); fieldsEl.hidden = false; }
-    else { fieldsEl.hidden = true; fieldsEl.innerHTML = ''; }
+    if(v === 'yes'){ siEl.hidden = false; paintCounters(); renderFields(); }
+    else { siEl.hidden = true; fieldsEl.innerHTML = ''; }
   }
-  btnYes.addEventListener('click', function(){ if(!frozen){ select('yes'); setFeedback(''); } });
-  btnNo.addEventListener('click',  function(){ if(!frozen){ select('no');  setFeedback(''); } });
+  btnYes.addEventListener('click', function(){ if(!closed()){ select('yes'); setFeedback(''); } });
+  btnNo.addEventListener('click',  function(){ if(!closed()){ select('no');  setFeedback(''); } });
 
   function reveal(el){
     if(RM || !window.gsap) return;
@@ -2914,23 +2983,24 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
   }
   /* Bandeja <-> agradecimiento. Siempre queda la ruta de regreso. */
   function mostrarGracias(estado, nombres){
+    var lista = nombres.map(function(n){ return String(n).replace(/\s*\(Menor\)$/i, ' (menor)'); });
     if(estado === 'confirmado'){
       gTitle.textContent = '¡Gracias por confirmar!';
-      gSub.textContent = nombres.length === 1
-        ? 'Te esperamos, ' + nombres[0] + '.'
-        : 'Confirmamos ' + nombres.length + ' lugares: ' + nombres.join(', ') + '.';
+      gSub.textContent = lista.length === 1
+        ? 'Te esperamos, ' + lista[0] + '.'
+        : 'Confirmamos ' + lista.length + ' lugares: ' + lista.join(', ') + '.';
     } else {
       gTitle.textContent = 'Gracias por avisarnos';
       gSub.textContent = 'Lamentamos que no puedas acompañarnos. Te vamos a extrañar.';
     }
     bandejaEl.hidden = true;
     graciasEl.hidden = false;
-    editarBtn.disabled = frozen;
+    editarBtn.disabled = frozen || bloqueado || sinFila;
     setFeedback('');
     reveal(graciasEl);
   }
   editarBtn.addEventListener('click', function(){
-    if(frozen) return;
+    if(frozen || bloqueado || sinFila) return;
     graciasEl.hidden = true; bandejaEl.hidden = false; setFeedback(''); reveal(bandejaEl);
   });
 
@@ -2952,57 +3022,101 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
     }
   }
 
-  function applyFreeze(){
-    if(!frozen) return;
+  /* Cierra todo y deja el motivo a la vista */
+  function lockAll(msg){
     btnYes.disabled = btnNo.disabled = btnSend.disabled = true;
     editarBtn.disabled = true;
+    adMenos.disabled = adMas.disabled = menMenos.disabled = menMas.disabled = true;
     var ins = fieldsEl.querySelectorAll('.rs-input');
     for(var i=0;i<ins.length;i++){ ins[i].disabled = true; }
     btnText.textContent = 'Confirmaciones cerradas';
-    if(graciasEl.hidden) setFeedback('La fecha límite para confirmar (10 de diciembre de 2026) ya pasó.', 'err');
+    if(msg) setFeedback(msg, 'err');
   }
+  var MSG_CERRADA = 'Las confirmaciones de esta invitación ya están cerradas. Si necesitas un cambio, contacta a los novios.';
+  var MSG_VENCIDA = 'La fecha límite para confirmar (10 de diciembre de 2026) ya pasó.';
 
+  btnYes.disabled = btnNo.disabled = true;
   if(urlPara){
-    btnYes.disabled = btnNo.disabled = true;
     fetch(PANEL_API + '?nombre=' + encodeURIComponent(urlPara) + '&url_boda=' + encodeURIComponent(RSVP_URL))
       .then(function(r){ return r.json(); })
       .then(function(resp){
         var d = resp && resp.invitado;
-        if(d && typeof d.pases === 'number' && d.pases > 0 && d.pases <= 20){ pasesAsignados = d.pases; }
+        /* Si el panel no la conoce no se deja confirmar */
+        if(!d){ sinFila = true; lockAll('No encontramos tu invitación. Pide a los novios que te envíen tu enlace de nuevo.'); return; }
+        /* el panel manda la verdad: pases y menores de AHORA */
+        if(typeof d.pases === 'number' && d.pases > 0 && d.pases <= 20){ pasesAsignados = d.pases; }
+        if(typeof d.pases_menores === 'number' && d.pases_menores >= 0 && d.pases_menores <= 20){ pasesMenores = d.pases_menores; }
+        listo = true;
         paintHeader();
-        if(!frozen){ btnYes.disabled = btnNo.disabled = false; }
-        if(d && (d.estado === 'confirmado' || d.estado === 'declino')){
-          if(d.nombres_confirmados && d.nombres_confirmados.length){ savedNames = d.nombres_confirmados.slice(); }
+        if(d.estado === 'confirmado' || d.estado === 'declino'){
+          savedNames = []; savedMen = [];
+          (d.nombres_confirmados || []).forEach(function(n){
+            n = String(n);
+            if(/\(Menor\)$/i.test(n)) savedMen.push(n.replace(/\s*\(Menor\)$/i, '')); else savedNames.push(n);
+          });
+          /* Los contadores arrancan en lo que había ocupado antes */
+          pasesAUsar   = Math.min(pasesAsignados, Math.max(1, savedNames.length));
+          menoresAUsar = Math.min(pasesMenores, savedMen.length);
           select(d.estado === 'confirmado' ? 'yes' : 'no');
           btnText.textContent = 'Actualizar respuesta';
           /* con respuesta guardada arranca CERRADA */
           mostrarGracias(d.estado, d.nombres_confirmados || []);
         }
-        applyFreeze();
+        if(d.bloqueado){ bloqueado = true; lockAll(MSG_CERRADA); return; }
+        if(frozen){ lockAll(graciasEl.hidden ? MSG_VENCIDA : ''); return; }
+        btnYes.disabled = btnNo.disabled = false;
+        if(choice === 'yes') paintCounters();
       })
       .catch(function(){
-        paintHeader();
-        if(!frozen){ btnYes.disabled = btnNo.disabled = false; }
-        applyFreeze();
+        setFeedback('No pudimos cargar tu invitación. Recarga la página.', 'err');
       });
   } else {
     /* Sin link personalizado no hay invitación que actualizar */
     btnSend.disabled = true;
     setFeedback('Para confirmar necesitas abrir el enlace personalizado que te enviamos. Ese enlace lleva tu nombre y tus pases; si lo abres desde un reenvío o escribiendo la dirección a mano, no podemos identificar tu invitación.', 'info');
-    applyFreeze();
+    if(frozen) lockAll(MSG_VENCIDA);
   }
 
   btnSend.addEventListener('click', function(){
-    if(frozen) return;
-    if(!urlPara){ setFeedback('Para confirmar necesitas abrir el enlace personalizado que te enviamos.', 'err'); return; }
+    if(closed() || sending) return;
     if(!choice){ setFeedback('Por favor selecciona si asistirás o no.', 'err'); return; }
     var nombres = [];
     if(choice === 'yes'){
       var inputs = fieldsEl.querySelectorAll('.rs-input');
-      for(var i=0;i<inputs.length;i++){ var v = inputs[i].value.trim(); if(v) nombres.push(v); }
-      if(!nombres.length){ setFeedback('Por favor escribe al menos un nombre.', 'err'); return; }
+      for(var i=0;i<inputs.length;i++){
+        var v = inputs[i].value.trim();
+        /* los menores llevan " (Menor)" para que el panel los distinga */
+        if(v) nombres.push(inputs[i].classList.contains('rs-input--men') ? v + SUF : v);
+      }
+      if(!nombres.length){ setFeedback('Por favor escribe al menos un nombre.', 'err'); if(inputs[0]) inputs[0].focus(); return; }
+      /* Un nombre por campo: "Ana y Luis" en un campo descuadra el panel */
+      var doble = null;
+      for(var k=0;k<inputs.length;k++){
+        var malo = /[&\/+,]|\s(y|and)\s/i.test(inputs[k].value.trim());
+        inputs[k].classList.toggle('falta', malo);
+        if(malo && !doble) doble = inputs[k];
+      }
+      if(doble){
+        setFeedback('Escribe un solo nombre en cada campo. Si vienen más personas, sube el contador y escribe cada nombre en su propio campo.', 'err');
+        doble.focus();
+        return;
+      }
+      /* Eligió más pases de los nombres que escribió */
+      var usa = pasesAUsar + menoresAUsar;
+      if(nombres.length < usa){
+        var faltan = usa - nombres.length, primero = null;
+        for(var j=0;j<inputs.length;j++){
+          if(!inputs[j].value.trim()){ inputs[j].classList.add('falta'); if(!primero) primero = inputs[j]; }
+        }
+        setFeedback('Elegiste ' + usa + ' pases pero escribiste ' + nombres.length + ' nombre' + (nombres.length === 1 ? '' : 's') +
+          '. Escribe ' + (faltan === 1 ? 'el nombre que falta' : 'los ' + faltan + ' nombres que faltan') +
+          ' o baja el contador a los pases que vas a utilizar.', 'err');
+        if(primero) primero.focus();
+        return;
+      }
     }
     var estado = choice === 'yes' ? 'confirmado' : 'declino';
+    sending = true;
     btnText.textContent = 'Enviando…';
     btnSend.disabled = true;
     setFeedback('');
@@ -3024,6 +3138,7 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
         .catch(function(){ return { ok: r.ok, status: r.status, d: null }; });
     })
     .then(function(res){
+      sending = false;
       btnSend.disabled = false;
       if(res.ok && res.d && res.d.ok){
         btnText.textContent = 'Actualizar respuesta';
@@ -3031,17 +3146,22 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
         if(estado === 'confirmado') confetti();
         return;
       }
-      btnText.textContent = 'Enviar confirmación';
       var err = res.d && res.d.error;
+      if(res.status === 423 || err === 'respuestas_cerradas'){ bloqueado = true; lockAll(MSG_CERRADA); return; }
+      if(err === 'invitacion_borrada' || res.status === 410){
+        sinFila = true;
+        lockAll('Esta invitación ya no está activa. Por favor contacta a los novios para que te envíen un enlace nuevo.');
+        return;
+      }
+      btnText.textContent = 'Enviar confirmación';
       setFeedback(
         err === 'no_match'
           ? 'No pudimos identificar tu invitación. Abre el enlace personalizado que te enviamos; ese es el único que registra tu confirmación.'
-          : (err === 'invitacion_borrada' || res.status === 410)
-            ? 'Esta invitación ya no está activa. Por favor contacta a los novios para que te envíen un enlace nuevo.'
-            : 'Hubo un problema al enviar. Inténtalo de nuevo.',
+          : 'Hubo un problema al enviar. Inténtalo de nuevo.',
         'err');
     })
     .catch(function(){
+      sending = false;
       btnSend.disabled = false;
       btnText.textContent = 'Enviar confirmación';
       setFeedback('Sin conexión. Verifica tu internet e inténtalo de nuevo.', 'err');
