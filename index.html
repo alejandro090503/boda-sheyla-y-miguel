@@ -854,7 +854,7 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 /* portada */
 .hero{background:#f4f6fb;align-items:center}
 .hero-bg{position:absolute;inset:-9% 0;z-index:-4;overflow:hidden;will-change:transform}
-.hero-drift{position:absolute;inset:-4%;background:url('ink/ink-marco-hero.webp') center/cover no-repeat;animation:heroDrift 20s ease-in-out infinite alternate}
+.hero-drift{position:absolute;inset:-4%;background:url('ink/portada-civil.webp') center/cover no-repeat;animation:heroDrift 20s ease-in-out infinite alternate}
 @keyframes heroDrift{0%{transform:translate3d(-3%,-2%,0) scale(1.04) rotate(-.8deg)}100%{transform:translate3d(3%,2%,0) scale(1.14) rotate(.8deg)}}
 .hero-glow{position:absolute;inset:0;z-index:-3;pointer-events:none;mix-blend-mode:screen;overflow:hidden}
 .hero-glow i{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.35) 0%,rgba(236,240,250,0) 70%);animation:glowFloat 28s ease-in-out infinite alternate,glowBreath 9s ease-in-out infinite;opacity:.4}
@@ -937,6 +937,11 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 .civ-names .civ-quote{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(20px,5.2vw,26px);line-height:1.6;color:#F6F8FC;text-shadow:0 2px 14px rgba(0,0,0,.55);max-width:34ch;margin:0 auto}
 
 /* galería: díptico con sus 2 fotos */
+.gal1{max-width:min(420px,84vw);margin:30px auto 0;cursor:zoom-in;animation:levitate 6.5s ease-in-out infinite}
+.gal1 .ph{position:relative;aspect-ratio:3/4.2;overflow:hidden;border:1px solid var(--gold-soft);box-shadow:0 0 0 5px var(--paper),0 0 0 6px var(--gold),0 26px 50px -18px rgba(30,47,78,.5)}
+.gal1 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity 2.2s ease,transform 15s linear}
+.gal1 img.on{opacity:1;transform:scale(1.12)}
+.gal1 img:nth-child(1){object-position:50% 70%}.gal1 img:nth-child(2){object-position:50% 45%}
 .gal2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,4vw,30px);max-width:680px;margin:26px auto 0;padding:0 18px}
 .gal2 figure{margin:0;cursor:zoom-in;animation:levitate 6.5s ease-in-out infinite}
 .gal2 figure:nth-child(2){animation-delay:-3.2s;margin-top:38px}
@@ -2092,9 +2097,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       <div class="eyebrow">Momentos</div>
       <h2 class="foil-text">Del camino <em>que</em> nos trajo aquí</h2>
     </div>
-    <div class="gal2">
-      <figure><div class="ph"><img src="pareja1.jpg" alt="Miguel Ángel y Sheyla en el campo"></div></figure>
-      <figure><div class="ph"><img src="pareja2.jpg" alt="Miguel Ángel y Sheyla"></div></figure>
+    <div class="gal1" id="gal1">
+      <div class="ph">
+        <img class="on" src="pareja1.jpg" alt="Miguel Ángel y Sheyla en el campo">
+        <img src="pareja2.jpg" alt="Miguel Ángel y Sheyla">
+      </div>
     </div>
   </section>
 
@@ -3250,6 +3257,10 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
     gsap.fromTo('.civ-names .eyebrow, .civ-names .civ-nm, .civ-names .civ-quote',{opacity:0,y:26},{opacity:1,y:0,duration:1.2,stagger:.18,ease:'power3.out',scrollTrigger:{trigger:'.civ-names',start:'top 75%'}});
   }
   /* galería díptico: lightbox */
+  (function(){ var g = document.getElementById('gal1'); if (!g) return; var ims = g.querySelectorAll('img'), k = 0;
+    if (ims.length > 1) setInterval(function(){ ims[k].classList.remove('on'); k = (k + 1) % ims.length; ims[k].classList.add('on'); }, 15000);
+    g.addEventListener('click', function(){ var lb = document.getElementById('lightbox'), im = document.getElementById('lightbox-img'); if (!lb || !im) return;
+      window.__stopAuto && window.__stopAuto(); im.src = ims[k].src; lb.classList.add('is-open'); im.style.opacity = 1; im.style.transform = 'none'; }); })();
   document.querySelectorAll('.gal2 figure').forEach(function(f){ f.addEventListener('click', function(){
     var lb = document.getElementById('lightbox'), im = document.getElementById('lightbox-img'); if (!lb || !im) return;
     window.__stopAuto && window.__stopAuto();
