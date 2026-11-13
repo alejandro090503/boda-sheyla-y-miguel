@@ -957,7 +957,8 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 .lluv-bank p{margin:0;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--ink-soft)}
 .lluv-bank .bk-name{font-family:var(--sans);font-weight:700;letter-spacing:.3em;padding-left:.3em;color:var(--accent-deep);margin:6px 0 4px}
 .lluv-bank .bk-num{font-family:var(--sans);font-size:clamp(19px,5.4vw,22px);font-weight:600;letter-spacing:.06em;color:var(--ink);font-variant-numeric:tabular-nums}
-.lluv-bank button{margin-top:14px;min-height:44px;padding:10px 24px;border:1.5px solid var(--accent-deep);background:transparent;color:var(--accent-deep);font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:.18em;cursor:pointer;touch-action:manipulation}
+.lluv-bank .bk-lbl{margin-top:16px;font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.lluv-bank button{margin-top:10px;min-height:44px;padding:10px 24px;border:1.5px solid var(--accent-deep);background:transparent;color:var(--accent-deep);font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:.18em;cursor:pointer;touch-action:manipulation}
 
 /* levitación */
 @keyframes levitate{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(0,-9px,0) rotate(var(--lr,.6deg))}}
@@ -2163,9 +2164,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
     </div>
     <div class="lluv-bank">
       <p>También puedes hacernos una transferencia</p>
-      <p class="bk-name">BBVA</p>
-      <p class="bk-num">4152 3145 0871 7702</p>
-      <button type="button" id="bkCopy">COPIAR NÚMERO</button>
+      <p class="bk-name">BANCOPPEL</p>
+      <p class="bk-lbl">Número de cuenta</p>
+      <p class="bk-num">10035875781</p>
+      <button type="button" class="bk-copy" data-n="10035875781">COPIAR CUENTA</button>
+      <p class="bk-lbl">CLABE</p>
+      <p class="bk-num">137694100358757815</p>
+      <button type="button" class="bk-copy" data-n="137694100358757815">COPIAR CLABE</button>
     </div>
   </section>
 
@@ -3269,9 +3274,8 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
     im.src = f.querySelector('img').src; lb.classList.add('is-open'); im.style.opacity = 1; im.style.transform = 'none';
   }); });
   /* copiar cuenta */
-  var cb = document.getElementById('bkCopy');
-  cb && cb.addEventListener('click', function(){ var t = '4152314508717702';
-    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ cb.textContent = 'COPIADO'; setTimeout(function(){ cb.textContent = 'COPIAR NÚMERO'; }, 2200); }, function(){ cb.textContent = t; }); });
+  document.querySelectorAll('.bk-copy').forEach(function(cb){ var lbl = cb.textContent; cb.addEventListener('click', function(){ var t = cb.dataset.n;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ cb.textContent = 'COPIADO'; setTimeout(function(){ cb.textContent = lbl; }, 2200); }, function(){ cb.textContent = t; }); }); });
 
   /* fundidos uniformes entre secciones */
   function parse(c){ var m = c && c.match(/rgba?\(([^)]+)\)/); if(!m) return null; var p=m[1].split(',').map(parseFloat); if(p.length>3 && p[3]===0) return null; return p.slice(0,3); }
